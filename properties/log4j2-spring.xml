@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration name="SpringSecurityWithSb2Point7AndJdk8Second" packages="com.security">
+    <Properties>
+        <Property name="LOG_PATTERN" value="%d [%thread] [TraceId:%X{transId}] [%-5level] [%c{1.}] - %msg%n" />
+        <Property name="LOG_PATTERN_2" value="%d [%thread] [%-5level] [%c{1.}] - %msg%n" />
+        <Property name="LOG_DIR" value="logs" />
+        <Property name="SYSTEM_APP_FILE" value="application.log" />
+    </Properties>
+    <Appenders>
+        <Console name="ConsoleAppender" target ="SYSTEM_OUT">
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+        </Console>
+        <Async name ="Async">
+            <PatternLayout pattern="${LOG_PATTERN}">
+            </PatternLayout>
+            <AppenderRef ref="FileAppender"/>
+        </Async>
+        <RollingFile name="FileAppender"
+                     fileName="${LOG_DIR}/${SYSTEM_APP_FILE}"
+                     filePattern="${LOG_DIR}/${SYSTEM_APP_FILE}-%d{yyyy-MM-dd}-%i.log"
+                     ignoreExceptions="false">
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="50MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="50"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.embedded.ldap" level="info" activity="false">
+            <AppenderRef ref="Async"/>
+            <AppenderRef ref="ConsoleAppender" />
+        </Logger>
+        <Logger name="org.springframework" level="info"/>
+        <Logger name="org.springframework.web" level="info"/>
+        <Root level="info">
+            <AppenderRef ref="Async" />
+            <AppenderRef ref="ConsoleAppender" />
+        </Root>
+    </Loggers>
+</Configuration>
